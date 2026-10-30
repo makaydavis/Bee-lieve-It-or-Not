@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Bee-lieve It Or Not?
 
 A desktop quiz game that challenges you to tell bees apart from their look-alikes. View a picture, choose **Bee** or **Not a bee**, and see how many points you can earn.
@@ -82,3 +83,6 @@ Scores are saved to `leaderboard.json` in the project folder and remain on that 
 ## Image credits
 
 The quiz uses the images included in the `Images` folders. Before publishing or redistributing the project, check and include the appropriate attribution and license for each image.
+=======
+# Bee-lieve-It-or-Not
+>>>>>>> 8404dad3966533f06954ed325cda175d68632f2a
