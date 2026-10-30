@@ -2,7 +2,7 @@
 
 A browser-based quiz that challenges you to tell bees apart from their look-alikes. View a picture, choose **Bee** or **Not a bee**, and see how many points you can earn.
 
-**Web app:** [open `web_app.py`](web_app.py) to view the server source.
+**Web app:** [run the web app](README-web-app.md) or [view `web_app.py`](web_app.py).
 
 ## Features
 
