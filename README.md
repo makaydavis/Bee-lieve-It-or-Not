@@ -2,6 +2,8 @@
 
 A browser-based quiz that challenges you to tell bees apart from their look-alikes. View a picture, choose **Bee** or **Not a bee**, and see how many points you can earn.
 
+**Web app:** [open `web_app.py`](web_app.py) to view the server source.
+
 ## Features
 
 - Ten randomly selected pictures per game
@@ -24,7 +26,7 @@ Clone the repository and open a terminal in the project folder:
 git clone https://github.com/makaydavis/Bee-lieve-It-or-Not.git
 cd Bee-lieve-It-or-Not
 python -m pip install -r requirements.txt
-python game.py
+python web_app.py
 ```
 
 Open `http://localhost:8000` in your browser. In Codespaces, open forwarded port **8000** from the **Ports** tab. Stop the server with Ctrl+C in the terminal.
