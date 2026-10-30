@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4eb">
+  <title>Bee-lieve It Or Not?</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="Bee-lieve It Or Not home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>Bee-lieve<br>It Or Not?</span>
+    </a>
+    <div class="edition-label"><span class="status-dot"></span> FIELD TEST 01 <span class="edition-divider">/</span> INSECT EDITION</div>
+  </header>
+
+  <main>
+    <div id="notice" class="notice" role="alert" hidden></div>
+
+    <section id="home-view" class="home-view">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">A closer look at the little things</p>
+          <h1>Bee-lieve<br><span>it or not?</span></h1>
+          <p class="intro">Some are bees. Some are brilliant impostors. Take a ten-picture field test and see what you can spot.</p>
+          <button id="start-button" class="button button-dark" type="button">
+            Start the quiz <span class="button-arrow" aria-hidden="true">&#8599;</span>
+          </button>
+          <div class="round-details"><span>10 pictures</span><span>1 point each</span><span>No time limit</span></div>
+        </div>
+        <div class="hero-art" aria-label="Photographs of bees, flies, and wasps">
+          <div id="preview-board" class="preview-board"></div>
+          <p class="image-caption"><span>01-03</span> SPECIMENS FROM THE COLLECTION</p>
+          <span class="hero-stamp" aria-hidden="true">LOOK<br>CLOSER</span>
+        </div>
+      </div>
+
+      <section class="leaderboard-section" aria-labelledby="home-leaderboard-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">The sharp-eyed</p><h2 id="home-leaderboard-title">Hall of fame</h2></div>
+          <span class="section-aside">BEST FIELD SCORES</span>
+        </div>
+        <ol id="home-leaderboard" class="ranking" aria-live="polite"></ol>
+      </section>
+    </section>
+
+    <section id="game-view" class="game-view" hidden>
+      <div class="game-topline">
+        <button id="quit-button" class="text-button" type="button">&#8592; Back to start</button>
+        <span class="round-tag">FIELD TEST <b>01</b></span>
+      </div>
+      <div class="question-heading">
+        <div><p class="eyebrow">Trust your eye</p><h1>Who is buzzing?</h1></div>
+        <p id="question-count" class="question-count">01 <span>/ 10</span></p>
+      </div>
+      <div class="progress-track" aria-hidden="true"><div id="progress-fill" class="progress-fill"></div></div>
+
+      <div class="quiz-layout">
+        <figure class="question-figure">
+          <img id="question-image" alt="Insect specimen to identify">
+          <figcaption><span>OBSERVATION</span><span id="image-index">SPECIMEN 01</span></figcaption>
+        </figure>
+        <section class="answer-panel" aria-labelledby="answer-title">
+          <p class="eyebrow">Make your call</p>
+          <h2 id="answer-title">Is this a bee?</h2>
+          <p class="answer-hint">Take a moment. The details tell the story.</p>
+          <div class="answer-buttons">
+            <button class="answer-button answer-bee" data-answer="true" type="button"><span class="answer-symbol" aria-hidden="true">+</span> Bee</button>
+            <button class="answer-button answer-not" data-answer="false" type="button"><span class="answer-symbol" aria-hidden="true">&#8212;</span> Not a bee</button>
+          </div>
+          <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+          <div class="answer-footer"><span>SCORE</span><strong id="score-value">0</strong><button id="next-button" class="button button-dark" type="button" hidden>Next picture <span class="button-arrow" aria-hidden="true">&#8594;</span></button></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="results-view" class="results-view" hidden>
+      <div class="results-intro"><p class="eyebrow">Field test complete</p><h1>Good eye.</h1><p id="final-score" class="final-score"></p></div>
+      <div class="results-layout">
+        <form id="score-form" class="score-form">
+          <label for="player-name">Add your name to the hall of fame</label>
+          <div class="name-entry"><input id="player-name" name="name" maxlength="20" autocomplete="name" placeholder="Your name" required><button class="button button-dark" type="submit">Save score <span class="button-arrow" aria-hidden="true">&#8599;</span></button></div>
+          <p id="save-feedback" class="save-feedback" role="status"></p>
+        </form>
+        <section class="leaderboard-section results-leaderboard" aria-labelledby="results-leaderboard-title">
+          <div class="section-heading"><div><p class="eyebrow">The sharp-eyed</p><h2 id="results-leaderboard-title">Hall of fame</h2></div></div>
+          <ol id="results-leaderboard" class="ranking" aria-live="polite"></ol>
+        </section>
+      </div>
+      <button id="play-again-button" class="text-button play-again" type="button">&#8635; Play another round</button>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>LOOK CLOSELY. GUESS WISELY.</span><span>BEE-LIEVE IT OR NOT? <span id="footer-year"></span></span></footer>
+</body>
+</html>

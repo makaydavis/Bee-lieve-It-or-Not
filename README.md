@@ -1,14 +1,14 @@
-<<<<<<< HEAD
 # Bee-lieve It Or Not?
 
-A desktop quiz game that challenges you to tell bees apart from their look-alikes. View a picture, choose **Bee** or **Not a bee**, and see how many points you can earn.
+A browser-based quiz that challenges you to tell bees apart from their look-alikes. View a picture, choose **Bee** or **Not a bee**, and see how many points you can earn.
 
 ## Features
 
 - Ten randomly selected pictures per game
 - Bee pictures alongside flies and wasps
-- One point for each correct answer, with feedback after every guess
-- A top-10 leaderboard that saves player names and scores locally
+- Feedback after each answer and a score summary at the end
+- A top-10 leaderboard saved locally
+- Responsive browser interface; no graphical desktop is required
 
 ## Requirements
 
@@ -23,41 +23,20 @@ Clone the repository and open a terminal in the project folder:
 ```bash
 git clone https://github.com/makaydavis/Bee-lieve-It-or-Not.git
 cd Bee-lieve-It-or-Not
-```
-
-Optionally, create and activate a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-macOS or Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Install the dependency and start the game:
-
-```bash
 python -m pip install -r requirements.txt
 python game.py
 ```
 
-On Windows, use `py` in place of `python` if that is how Python is installed on your system.
+Open `http://localhost:8000` in your browser. In Codespaces, open forwarded port **8000** from the **Ports** tab. Stop the server with Ctrl+C in the terminal.
+
+The server uses Python's built-in HTTP server and does not require Flask or a desktop display. Tkinter and Pillow remain project requirements because the desktop game implementation is kept in `game.py`.
 
 ## How to play
 
-1. Select **Start playing**.
+1. Select **Start the quiz**.
 2. Look at each insect picture and choose **Bee** or **Not a bee**.
-3. Select **Next picture** to continue.
-4. At the end, enter your name and save your score to the leaderboard.
+3. Continue through the pictures and review your score.
+4. Enter your name to save your score to the leaderboard.
 
 Flies and wasps count as **Not a bee**. Each game uses a random selection of available images.
 
@@ -66,15 +45,21 @@ Flies and wasps count as **Not a bee**. Each game uses a random selection of ava
 ```text
 .
 ├── game.py
+├── web_app.py
 ├── requirements.txt
 ├── Images/
 │   ├── Bees/
 │   ├── Flies/
 │   └── Wasps/
+├── static/
+│   ├── app.js
+│   └── style.css
+├── templates/
+│   └── index.html
 └── README.md
 ```
 
-Keep the `Images/Bees`, `Images/Flies`, and `Images/Wasps` folders alongside `game.py`. The game loads supported image files (`.jpg`, `.jpeg`, and `.png`) from these folders when it starts.
+Keep the `Images/Bees`, `Images/Flies`, and `Images/Wasps` folders alongside `game.py`. Supported image files are `.jpg`, `.jpeg`, and `.png`.
 
 ## Leaderboard
 
@@ -83,6 +68,3 @@ Scores are saved to `leaderboard.json` in the project folder and remain on that 
 ## Image credits
 
 The quiz uses the images included in the `Images` folders. Before publishing or redistributing the project, check and include the appropriate attribution and license for each image.
-=======
-# Bee-lieve-It-or-Not
->>>>>>> 8404dad3966533f06954ed325cda175d68632f2a

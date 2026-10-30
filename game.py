@@ -512,14 +512,9 @@ class BeeGame:
 
 
 def main() -> None:
-    root = tk.Tk()
-    try:
-        BeeGame(root)
-    except (OSError, ValueError) as error:
-        messagebox.showerror("Could not start game", str(error))
-        root.destroy()
-        return
-    root.mainloop()
+    from web_app import main as run_web_app
+
+    run_web_app()
 
 
 if __name__ == "__main__":
