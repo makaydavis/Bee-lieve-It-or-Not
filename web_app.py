@@ -13,6 +13,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+try:
+    import psycopg
+except ImportError:
+    psycopg = None
+
+PSYCOPG_ERRORS = (psycopg.Error,) if psycopg is not None else ()
+
 
 BASE_DIR = Path(__file__).resolve().parent
 IMAGE_DIR = BASE_DIR / "Images"
@@ -24,6 +31,9 @@ LEADERBOARD_LIMIT = 10
 IMAGE_CATEGORIES = ("Bees", "Flies", "Wasps")
 SUPPORTED_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 COOKIE_NAME = "bee_game_session"
+DATABASE_URL = os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 
 def answer_explanation(category: str) -> str:
@@ -78,6 +88,25 @@ def load_questions() -> list[tuple[str, str, bool]]:
 
 
 def load_leaderboard() -> list[dict[str, str | int]]:
+    if DATABASE_URL:
+        if psycopg is None:
+            raise RuntimeError("PostgreSQL support is not installed.")
+        with psycopg.connect(DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT name, score
+                    FROM leaderboard
+                    ORDER BY score DESC, created_at ASC, id ASC
+                    LIMIT %s
+                    """,
+                    (LEADERBOARD_LIMIT,),
+                )
+                return [
+                    {"name": name, "score": score}
+                    for name, score in cursor.fetchall()
+                ]
+
     try:
         with LEADERBOARD_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
@@ -99,6 +128,25 @@ def load_leaderboard() -> list[dict[str, str | int]]:
     return sorted(entries, key=lambda entry: entry["score"], reverse=True)[:LEADERBOARD_LIMIT]
 
 
+def initialize_database() -> None:
+    if not DATABASE_URL:
+        return
+    if psycopg is None:
+        raise RuntimeError("PostgreSQL support is not installed.")
+    with psycopg.connect(DATABASE_URL) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS leaderboard (
+                    id BIGSERIAL PRIMARY KEY,
+                    name VARCHAR(20) NOT NULL,
+                    score INTEGER NOT NULL CHECK (score >= 0),
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+
+
 def image_url(question: tuple[str, str, bool]) -> str:
     category, filename, _ = question
     return f"/images/{category}/{filename}"
@@ -109,8 +157,16 @@ class BeeRequestHandler(BaseHTTPRequestHandler):
         path = urlsplit(self.path).path
         if path == "/":
             self.send_file(TEMPLATE_FILE, "text/html; charset=utf-8")
+        elif path == "/health":
+            self.send_json(HTTPStatus.OK, {"status": "ok"})
         elif path == "/api/leaderboard":
-            self.send_json(HTTPStatus.OK, {"entries": load_leaderboard()})
+            try:
+                self.send_json(HTTPStatus.OK, {"entries": load_leaderboard()})
+            except Exception as error:
+                self.send_json(
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                    {"error": f"Could not load the leaderboard: {error}"},
+                )
         elif path == "/api/previews":
             try:
                 questions = load_questions()
@@ -275,14 +331,31 @@ class BeeRequestHandler(BaseHTTPRequestHandler):
             return
 
         with LEADERBOARD_LOCK:
-            entries = load_leaderboard()
-            entries.append({"name": name, "score": game.score})
-            entries.sort(key=lambda entry: entry["score"], reverse=True)
-            entries = entries[:LEADERBOARD_LIMIT]
             try:
-                with LEADERBOARD_FILE.open("w", encoding="utf-8") as file:
-                    json.dump(entries, file, ensure_ascii=False, indent=2)
-            except OSError as error:
+                if DATABASE_URL:
+                    if psycopg is None:
+                        raise RuntimeError("PostgreSQL support is not installed.")
+                    with psycopg.connect(DATABASE_URL) as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "INSERT INTO leaderboard (name, score) VALUES (%s, %s)",
+                                (name, game.score),
+                            )
+                    entries = load_leaderboard()
+                else:
+                    entries = load_leaderboard()
+                    entries.append({"name": name, "score": game.score})
+                    entries.sort(key=lambda entry: entry["score"], reverse=True)
+                    entries = entries[:LEADERBOARD_LIMIT]
+                    with LEADERBOARD_FILE.open("w", encoding="utf-8") as file:
+                        json.dump(entries, file, ensure_ascii=False, indent=2)
+            except (OSError, RuntimeError) as error:
+                self.send_json(
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                    {"error": f"Could not save the leaderboard: {error}"},
+                )
+                return
+            except PSYCOPG_ERRORS as error:
                 self.send_json(
                     HTTPStatus.INTERNAL_SERVER_ERROR,
                     {"error": f"Could not save the leaderboard: {error}"},
@@ -352,6 +425,11 @@ class BeeRequestHandler(BaseHTTPRequestHandler):
 
 def main() -> None:
     port = int(os.environ.get("PORT", "8000"))
+    try:
+        initialize_database()
+    except Exception as error:
+        print(f"Database initialization failed: {error}")
+        return
     server = ThreadingHTTPServer(("0.0.0.0", port), BeeRequestHandler)
     print(f"Bee-lieve It Or Not? is running at http://localhost:{port}")
     try:

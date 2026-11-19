@@ -33,6 +33,9 @@ python web_app.py
 
 Open `http://localhost:8000` in your browser. In Codespaces, open forwarded port **8000** from the **Ports** tab. Stop the server with Ctrl+C in the terminal.
 
+For public hosting on Render with a shared PostgreSQL leaderboard, follow
+[`README-web-app.md`](README-web-app.md).
+
 The server uses Python's built-in HTTP server and does not require Flask or a desktop display. Tkinter and Pillow remain project requirements because the desktop game implementation is kept in `game.py`.
 
 ## How to play

@@ -22,6 +22,23 @@ python web_app.py
 Open [http://localhost:8000](http://localhost:8000) in a browser. Stop the
 server with **Ctrl+C** in the terminal.
 
+## Deploy to Render
+
+The repository includes [`render.yaml`](./render.yaml), which defines a Python
+web service and `/health` health check.
+
+1. Push the repository to GitHub.
+2. In Render, create a PostgreSQL database.
+3. Create a Web Service from the repository.
+4. Set **Build Command** to `pip install -r requirements.txt`.
+5. Set **Start Command** to `python web_app.py`.
+6. Add `DATABASE_URL` to the service environment variables and set it to the
+   Render PostgreSQL **Internal Database URL**.
+7. Deploy and open the generated `https://` URL.
+
+The app creates the `leaderboard` table automatically. If `DATABASE_URL` is not
+set, it uses `leaderboard.json` for local development.
+
 To use a different port, set the `PORT` environment variable. For example, on
 Linux or macOS:
 
