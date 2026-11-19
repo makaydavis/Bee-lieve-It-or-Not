@@ -38,21 +38,21 @@ class LeaderboardEntry(TypedDict):
     score: int
 
 
-def load_questions() -> list[tuple[Path, bool]]:
-    questions: list[tuple[Path, bool]] = []
+def load_questions() -> list[tuple[Path, bool, str]]:
+    questions: list[tuple[Path, bool, str]] = []
     for folder_name, is_bee in (("Bees", True), ("Flies", False), ("Wasps", False)):
         folder = IMAGE_DIR / folder_name
         if not folder.is_dir():
             raise FileNotFoundError(f"Could not find the image folder:\n{folder}")
         questions.extend(
-            (image_path, is_bee)
+            (image_path, is_bee, folder_name)
             for image_path in folder.iterdir()
             if image_path.is_file() and image_path.suffix.lower() in {".jpg", ".jpeg", ".png"}
         )
 
-    if not any(is_bee for _, is_bee in questions):
+    if not any(is_bee for _, is_bee, _ in questions):
         raise ValueError(f"No bee images were found in:\n{IMAGE_DIR / 'Bees'}")
-    if not any(not is_bee for _, is_bee in questions):
+    if not any(not is_bee for _, is_bee, _ in questions):
         raise ValueError(f"No fly or wasp images were found in:\n{IMAGE_DIR}")
     return questions
 
@@ -106,7 +106,7 @@ class BeeGame:
         self.root = root
         self.all_questions = load_questions()
         self.leaderboard = load_leaderboard()
-        self.questions: list[tuple[Path, bool]] = []
+        self.questions: list[tuple[Path, bool, str]] = []
         self.question_index = 0
         self.score = 0
         self.answered = False
@@ -305,7 +305,7 @@ class BeeGame:
             bg=CARD,
         ).pack(pady=(0, 14))
 
-        image_path, _ = self.questions[self.question_index]
+        image_path, _, _ = self.questions[self.question_index]
         try:
             with Image.open(image_path) as image:
                 display_image = ImageOps.contain(
@@ -357,6 +357,7 @@ class BeeGame:
             return
         self.answered = True
         correct_answer = self.questions[self.question_index][1]
+        category = self.questions[self.question_index][2]
         for button in self.answer_buttons:
             button.configure(state="disabled")
 
@@ -364,8 +365,24 @@ class BeeGame:
             self.score += 1
             self.feedback.configure(text="That's right! +1 point", fg=GREEN)
         else:
-            answer_text = "a bee" if correct_answer else "not a bee"
-            self.feedback.configure(text=f"Not quite — this is {answer_text}.", fg=RED)
+            explanations = {
+                "Bees": (
+                    "This is a bee. Bees are generally hairier and sturdier, often carry pollen "
+                    "on their legs or body, and commonly have elbowed antennae."
+                ),
+                "Wasps": (
+                    "This is a wasp, not a bee. Wasps are usually smoother and slimmer, with a "
+                    "narrowly pinched waist and much less of the hair used for collecting pollen."
+                ),
+                "Flies": (
+                    "This is a fly, not a bee. Flies have only one visible pair of wings, plus "
+                    "large eyes and short antennae; bees and wasps have two pairs of wings."
+                ),
+            }
+            self.feedback.configure(
+                text=f"Not quite — {explanations.get(category, 'this specimen is not a bee.')}",
+                fg=RED,
+            )
 
         self.next_button.pack(pady=(2, 0), ipadx=16, ipady=8)
 

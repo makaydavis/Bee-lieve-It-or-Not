@@ -26,6 +26,24 @@ SUPPORTED_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 COOKIE_NAME = "bee_game_session"
 
 
+def answer_explanation(category: str) -> str:
+    explanations = {
+        "Bees": (
+            "This is a bee. Bees are generally hairier and sturdier, often carry pollen "
+            "on their legs or body, and commonly have elbowed antennae."
+        ),
+        "Wasps": (
+            "This is a wasp, not a bee. Wasps are usually smoother and slimmer, with a "
+            "narrowly pinched waist and much less of the hair used for collecting pollen."
+        ),
+        "Flies": (
+            "This is a fly, not a bee. Flies have only one visible pair of wings, plus "
+            "large eyes and short antennae; bees and wasps have two pairs of wings."
+        ),
+    }
+    return explanations.get(category, "This specimen is not a bee.")
+
+
 @dataclass
 class GameSession:
     questions: list[tuple[str, str, bool]]
@@ -201,7 +219,7 @@ class BeeRequestHandler(BaseHTTPRequestHandler):
             self.send_json(HTTPStatus.CONFLICT, {"error": "This picture was already answered."})
             return
 
-        is_bee = game.questions[game.index][2]
+        category, _, is_bee = game.questions[game.index]
         correct = choice == is_bee
         if correct:
             game.score += 1
@@ -210,6 +228,8 @@ class BeeRequestHandler(BaseHTTPRequestHandler):
             "correct": correct,
             "score": game.score,
             "correct_answer": "a bee" if is_bee else "not a bee",
+            "category": "bee" if is_bee else category.lower().removesuffix("s"),
+            "explanation": answer_explanation(category),
         }
         self.send_json(HTTPStatus.OK, result)
 

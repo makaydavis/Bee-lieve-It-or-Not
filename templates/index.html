@@ -27,7 +27,7 @@
           <h1>Bee-lieve<br><span>it or not?</span></h1>
           <p class="intro">Some are bees. Some are brilliant impostors. Take a ten-picture field test and see what you can spot.</p>
           <button id="start-button" class="button button-dark" type="button">
-            Start the quiz <span class="button-arrow" aria-hidden="true">&#8599;</span>
+            Learn the field clues <span class="button-arrow" aria-hidden="true">&#8599;</span>
           </button>
           <div class="round-details"><span>10 pictures</span><span>1 point each</span><span>No time limit</span></div>
         </div>
@@ -45,6 +45,31 @@
         </div>
         <ol id="home-leaderboard" class="ranking" aria-live="polite"></ol>
       </section>
+    </section>
+
+    <section id="intro-view" class="intro-view" hidden aria-live="polite">
+      <div class="intro-topline">
+        <button id="intro-back-home" class="text-button" type="button">&#8592; Back to start</button>
+        <span id="intro-progress" class="round-tag">FIELD NOTE <b>01</b> / 04</span>
+      </div>
+
+      <div class="intro-card">
+        <div id="intro-art" class="intro-art" aria-hidden="true"></div>
+        <section class="intro-copy">
+          <p id="intro-kicker" class="eyebrow"></p>
+          <h1 id="intro-title"></h1>
+          <p id="intro-text" class="intro-description"></p>
+          <div id="intro-cues" class="clue-list"></div>
+        </section>
+      </div>
+
+      <div class="intro-controls">
+        <button id="intro-skip" class="text-button" type="button">Skip field briefing</button>
+        <div class="intro-navigation">
+          <button id="intro-prev" class="button intro-prev" type="button">Previous</button>
+          <button id="intro-next" class="button button-dark" type="button"><span id="intro-next-label">Next clue</span> <span class="button-arrow" aria-hidden="true">&#8594;</span></button>
+        </div>
+      </div>
     </section>
 
     <section id="game-view" class="game-view" hidden>

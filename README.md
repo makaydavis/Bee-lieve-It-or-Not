@@ -8,7 +8,9 @@ A browser-based quiz that challenges you to tell bees apart from their look-alik
 
 - Ten randomly selected pictures per game
 - Bee pictures alongside flies and wasps
-- Feedback after each answer and a score summary at the end
+- A field-clue briefing before the quiz
+- Category-specific feedback for bees, flies, and wasps
+- A score summary at the end
 - A top-10 leaderboard saved locally
 - Responsive browser interface; no graphical desktop is required
 
@@ -35,12 +37,13 @@ The server uses Python's built-in HTTP server and does not require Flask or a de
 
 ## How to play
 
-1. Select **Start the quiz**.
+1. Select **Learn the field clues** for a short bee, fly, and wasp briefing, or skip it to start immediately.
 2. Look at each insect picture and choose **Bee** or **Not a bee**.
 3. Continue through the pictures and review your score.
 4. Enter your name to save your score to the leaderboard.
 
 Flies and wasps count as **Not a bee**. Each game uses a random selection of available images.
+After an incorrect answer, the app explains which insect was shown and highlights a useful identification clue.
 
 ## Project structure
 

@@ -38,7 +38,8 @@ the forwarded URL to play in your browser.
 
 ## Play
 
-1. Select **Start the quiz**.
+1. Select **Learn the field clues** for a short four-step field briefing, or choose
+   **Skip field briefing** to begin immediately.
 2. For each picture, choose **Bee** or **Not a bee**.
 3. Answer all ten questions to see your score.
 4. Enter a name to save your score to the leaderboard.
@@ -47,6 +48,9 @@ The quiz selects up to ten random images from the available bee, fly, and wasp
 images. Flies and wasps count as **Not a bee**. The leaderboard keeps the top
 ten scores in `leaderboard.json` on the computer running the app; it is not
 shared between separate installations or servers.
+
+After a wrong answer, the app identifies whether the specimen was a bee, fly,
+or wasp and explains a useful visual clue for distinguishing it.
 
 ## Project files
 
